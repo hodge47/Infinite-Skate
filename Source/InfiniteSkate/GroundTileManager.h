@@ -20,6 +20,11 @@ public:
 	int NumberOfTilesToSpawn;
 	UPROPERTY(EditDefaultsOnly, Category=Spawning)
 	TSubclassOf<AGroundTile> GroundTileToSpawn;
+	UPROPERTY(EditDefaultsOnly, Category=Spawning)
+	float TileMoveSpeed;
+	UPROPERTY(EditDefaultsOnly, Category=Spawning)
+	FVector TileDestinationPoint;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,6 +34,7 @@ private:
 
 	UFUNCTION()
     void SpawnGroundTiles();
+	void InitializeGroundTiles();
 
 public:	
 	// Called every frame
