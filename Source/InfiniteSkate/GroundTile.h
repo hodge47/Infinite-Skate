@@ -22,10 +22,24 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	bool IsInitialized;
+	bool CanMove;
+	float MoveSpeed;
+	FVector DestinationPoint;
+	AGroundTile* LeadingTile;
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetStaticMesh(UStaticMeshComponent* mesh);
+	void InitializeTile(float moveSpeed, FVector destinationPoint, AGroundTile* leadingTile);
+	void SetMoveSpeed(float moveSpeed);
+	void SetDestinationPoint(FVector destinationPoint);
+	void SetLeadingTile(AGroundTile* leadingTile);
+	void EnableMovement(bool enableMovement);
+	
+private:
+	void MoveTile(float DeltaTime);
+	void CheckNeedToRecycle();
 };

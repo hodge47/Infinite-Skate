@@ -16,6 +16,7 @@ void AGroundTileManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Spawn the ground tiles
 	SpawnGroundTiles();
 }
 
@@ -29,19 +30,45 @@ void AGroundTileManager::Tick(float DeltaTime)
 void AGroundTileManager::SpawnGroundTiles()
 {
 	FActorSpawnParameters SpawnParams;
-
-	// The tile offset for the next spawned tile -
-	// offset by -200 on y axis to so middle of tile is actually 0
 	FVector TileOffset = FVector(0.f, -200.f, 0.f);
 	for(int i = 0; i < NumberOfTilesToSpawn; i++)
 	{
-		AGroundTile* Tile = GetWorld()->SpawnActor<AGroundTile>(GroundTileToSpawn, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+		// Create ground tile
+		AGroundTile* Tile = GetWorld()->SpawnActor<AGroundTile>(GroundTileToSpawn, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);	
 		Tile->SetActorLocation(TileOffset);
 		GroundTiles.Add(Tile);
+
+		// Increase the tile offset
 		TileOffset = TileOffset + FVector(400.f, 0.f, 0.f);
 	}
 	
-	//AActor* SpawnedActorReference = GetWorld()->SpawnActor<AActor>(GroundTileToSpawn, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+	// Initialize the ground tiles
+	InitializeGroundTiles();
 }
+
+void AGroundTileManager::InitializeGroundTiles()
+{
+	/*
+	 * The tile offset for the next spawned tile -
+	 * offset by -200 on y axis to so middle of tile is actually 0
+	 */
+	
+	for(int i = 0; i < GroundTiles.Num(); i++)
+	{
+		// Get leading tile
+		AGroundTile* LeadingTile;
+		if(i == 0)
+			LeadingTile = GroundTiles[GroundTiles.Num() - 1];
+		else if(i == 1)
+		{
+			LeadingTile = GroundTiles[0];
+		}
+		else 
+			LeadingTile = GroundTiles[i - 1];
+		// Initialize the tile
+		GroundTiles[i]->InitializeTile(TileMoveSpeed, TileDestinationPoint, LeadingTile);
+	}
+}
+
 
 
