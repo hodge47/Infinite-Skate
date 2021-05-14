@@ -18,6 +18,8 @@ void AGroundTileManager::BeginPlay()
 
 	// Spawn the ground tiles
 	SpawnGroundTiles();
+	// Spawn the obstacles
+	SpawnObstacles();
 }
 
 // Called every frame
@@ -46,6 +48,25 @@ void AGroundTileManager::SpawnGroundTiles()
 	InitializeGroundTiles();
 }
 
+void AGroundTileManager::SpawnObstacles()
+{
+	FActorSpawnParameters SpawnParams;
+	FVector ObstacleOffset = FVector(0.f, 0.f, 0.f);
+
+	for(int i = 0; i < GroundTiles.Num(); i++)
+	{
+		AObstacle* Obstacle = GetWorld()->SpawnActor<AObstacle>(ObstacleToSpawn, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+		Obstacle->SetActorLocation(ObstacleOffset);
+		Obstacles.Add(Obstacle);
+
+		ObstacleOffset = ObstacleOffset + FVector(400.f, 0.f, 0.f);
+	}
+
+	// Initialize the obstacles
+	InitializeObstacles();
+}
+
+
 void AGroundTileManager::InitializeGroundTiles()
 {
 	/*
@@ -67,6 +88,30 @@ void AGroundTileManager::InitializeGroundTiles()
 			LeadingTile = GroundTiles[i - 1];
 		// Initialize the tile
 		GroundTiles[i]->InitializeTile(TileMoveSpeed, TileDestinationPoint, LeadingTile);
+	}
+}
+
+void AGroundTileManager::InitializeObstacles()
+{
+	/*
+	* The obstacle offset for the next spawned obstacle -
+	* offset by -200 on y axis to so middle of tile is actually 0
+	*/
+	
+	for(int i = 0; i < NumberOfTilesToSpawn; i++)
+	{
+		// Get leading tile
+		AObstacle* LeadingObstacle;
+		if(i == 0)
+			LeadingObstacle = Obstacles[Obstacles.Num() - 1];
+		else if(i == 1)
+		{
+			LeadingObstacle = Obstacles[0];
+		}
+		else 
+			LeadingObstacle = Obstacles[i - 1];
+		// Initialize the tile
+		Obstacles[i]->InitializeObstacle(TileMoveSpeed, TileDestinationPoint, LeadingObstacle);
 	}
 }
 
