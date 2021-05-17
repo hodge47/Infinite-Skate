@@ -94,24 +94,21 @@ void AObstacle::CheckNeedToRecycle()
 {
 	if (this->GetActorLocation().X <= this->DestinationPoint.X)
 	{
-		FVector offset = FVector(400.f, 0.f, 0.f) + RandomizePositionY();
-		this->SetActorLocation(LeadingObstacle->GetActorLocation() + offset);
+		FVector newPosition = FVector(LeadingObstacle->GetActorLocation().X + 400.f, RandomizePositionY().Y, 0.f);
+		this->SetActorLocation(newPosition);
 	}
 }
 
 FVector AObstacle::RandomizePositionY()
 {
-	// Seed rand
-	srand(time(NULL));
-	// Get random number - 0 or 1
-	int side = rand() % 2;
+	int side = (int)FMath::RandRange(0, 2);
 
 	FVector yOffset;
 
 	if(side == 0)
-		yOffset = FVector(0.f, -100.f, 0.f);
+		yOffset = FVector(0.f, -100.f, 0.f);d
 	else
-		yOffset = FVector(0.f, 200.f, 0.f);
+		yOffset = FVector(0.f, 100.f, 0.f);
 
 	return yOffset;
 }
