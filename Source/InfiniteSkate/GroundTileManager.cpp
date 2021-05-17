@@ -3,6 +3,8 @@
 
 #include "GroundTileManager.h"
 
+#include <string>
+
 // Sets default values
 AGroundTileManager::AGroundTileManager()
 {
@@ -40,8 +42,13 @@ void AGroundTileManager::SpawnGroundTiles()
 		Tile->SetActorLocation(TileOffset);
 		GroundTiles.Add(Tile);
 
+		if(i == 0)
+		{
+			TileMeshBounds = Tile->GetStaticMesh()->Bounds.BoxExtent.X * 2.f;
+		}
+
 		// Increase the tile offset
-		TileOffset = TileOffset + FVector(400.f, 0.f, 0.f);
+		TileOffset = TileOffset + FVector(TileMeshBounds, 0.f, 0.f);
 	}
 	
 	// Initialize the ground tiles
@@ -59,7 +66,17 @@ void AGroundTileManager::SpawnObstacles()
 		Obstacle->SetActorLocation(ObstacleOffset);
 		Obstacles.Add(Obstacle);
 
-		ObstacleOffset = ObstacleOffset + FVector(400.f, 0.f, 0.f);
+		if(i == 0)
+		{
+			// Get the box extent of the obstacle mesh
+			ObstacleMeshBounds = Obstacle->GetStaticMesh()->Bounds.BoxExtent.X * 2.f;
+			// Calculate obstacle offset from obstacle mesh bounds
+			ObstacleOffset = ObstacleOffset + FVector(ObstacleMeshBounds / 2.f, 0.f, 0.f);
+			// Add the new offset to the position of the actor
+			Obstacle->SetActorLocation(ObstacleOffset);
+		}
+
+		ObstacleOffset = ObstacleOffset + FVector(TileMeshBounds, 0.f, 0.f);
 	}
 
 	// Initialize the obstacles
@@ -110,8 +127,15 @@ void AGroundTileManager::InitializeObstacles()
 		}
 		else 
 			LeadingObstacle = Obstacles[i - 1];
-		// Initialize the tile
-		Obstacles[i]->InitializeObstacle(TileMoveSpeed, TileDestinationPoint, LeadingObstacle);
+
+		// Get the fixed obstacle distance
+		float ObstacleDistance = 0.f;
+		if (Obstacles.Num() >= 2)
+		{
+			ObstacleDistance = FVector::Distance(Obstacles[0]->GetActorLocation(), Obstacles[1]->GetActorLocation());
+		}
+		// Initialize the Obstacle
+		Obstacles[i]->InitializeObstacle(TileMoveSpeed, TileDestinationPoint, LeadingObstacle, ObstacleDistance);
 	}
 }
 

@@ -44,7 +44,7 @@ void AObstacle::SetStaticMesh(UStaticMeshComponent* mesh)
 	Mesh = mesh;
 }
 
-void AObstacle::InitializeObstacle(float moveSpeed, FVector destinationPoint, AObstacle* leadingObstacle)
+void AObstacle::InitializeObstacle(float moveSpeed, FVector destinationPoint, AObstacle* leadingObstacle, float ObstacleDistance)
 {
 	// Set the move speed
 	SetMoveSpeed(moveSpeed);
@@ -57,6 +57,10 @@ void AObstacle::InitializeObstacle(float moveSpeed, FVector destinationPoint, AO
 	// Randomize the initial y position
 	FVector position = FVector(this->GetActorLocation().X, RandomizePositionY().Y, this->GetActorLocation().Z);
 	this->SetActorLocation(position);
+	// Get the mesh bounds
+	MeshBounds = this->GetStaticMesh()->Bounds.BoxExtent.X;
+	// Get the leading obstacle distance
+	LeadingObstacleDistance = ObstacleDistance;
 
 	// Set IsInitialized to true
 	IsInitialized = true;
@@ -92,9 +96,9 @@ void AObstacle::MoveObstacle(float DeltaTime)
 
 void AObstacle::CheckNeedToRecycle()
 {
-	if (this->GetActorLocation().X <= this->DestinationPoint.X)
+	if (this->GetActorLocation().X <= (this->DestinationPoint.X + MeshBounds))
 	{
-		FVector newPosition = FVector(LeadingObstacle->GetActorLocation().X + 400.f, RandomizePositionY().Y, 0.f);
+		FVector newPosition = FVector(LeadingObstacle->GetActorLocation().X + LeadingObstacleDistance, RandomizePositionY().Y, 0.f);
 		this->SetActorLocation(newPosition);
 	}
 }
@@ -106,7 +110,7 @@ FVector AObstacle::RandomizePositionY()
 	FVector yOffset;
 
 	if(side == 0)
-		yOffset = FVector(0.f, -100.f, 0.f);d
+		yOffset = FVector(0.f, -100.f, 0.f);
 	else
 		yOffset = FVector(0.f, 100.f, 0.f);
 

@@ -28,13 +28,16 @@ private:
 	float MoveSpeed;
 	FVector DestinationPoint;
 	AObstacle* LeadingObstacle;
+	float LeadingObstacleDistance;
+	float MeshBounds;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetStaticMesh(UStaticMeshComponent* mesh);
-	void InitializeObstacle(float moveSpeed, FVector destinationPoint, AObstacle* leadingObstacle);
+	class UStaticMeshComponent* GetStaticMesh() { return Mesh;}
+	void InitializeObstacle(float moveSpeed, FVector destinationPoint, AObstacle* leadingObstacle, float ObstacleDistance);
 	void SetMoveSpeed(float moveSpeed);
 	void SetDestinationPoint(FVector destinationPoint);
 	void SetLeadingObstacle(AObstacle* leadingObstacle);

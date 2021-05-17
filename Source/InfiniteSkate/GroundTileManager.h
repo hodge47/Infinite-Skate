@@ -36,6 +36,8 @@ protected:
 private:
 	TArray<AGroundTile*> GroundTiles;
 	TArray<AObstacle*> Obstacles;
+	float TileMeshBounds;
+	float ObstacleMeshBounds;
 
 	UFUNCTION()
     void SpawnGroundTiles();

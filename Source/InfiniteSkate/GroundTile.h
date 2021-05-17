@@ -27,12 +27,14 @@ private:
 	float MoveSpeed;
 	FVector DestinationPoint;
 	AGroundTile* LeadingTile;
+	float MeshBounds;
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetStaticMesh(UStaticMeshComponent* mesh);
+	class UStaticMeshComponent* GetStaticMesh() { return Mesh;}
 	void InitializeTile(float moveSpeed, FVector destinationPoint, AGroundTile* leadingTile);
 	void SetMoveSpeed(float moveSpeed);
 	void SetDestinationPoint(FVector destinationPoint);
