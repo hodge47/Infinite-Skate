@@ -4,44 +4,47 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "GroundTile.generated.h"
+#include "Obstacle.generated.h"
 
 UCLASS()
-class INFINITESKATE_API AGroundTile : public AActor
+class INFINITESKATE_API AObstacle : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AGroundTile();
+	AObstacle();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=Mesh)
 	class UStaticMeshComponent* Mesh;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-	bool IsInitialized;
+	bool IsInitialized = false;
 	bool CanMove;
 	float MoveSpeed;
 	FVector DestinationPoint;
-	AGroundTile* LeadingTile;
+	AObstacle* LeadingObstacle;
+	float LeadingObstacleDistance;
 	float MeshBounds;
-	
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SetStaticMesh(UStaticMeshComponent* mesh);
 	class UStaticMeshComponent* GetStaticMesh() { return Mesh;}
-	void InitializeTile(float moveSpeed, FVector destinationPoint, AGroundTile* leadingTile);
+	void InitializeObstacle(float moveSpeed, FVector destinationPoint, AObstacle* leadingObstacle, float ObstacleDistance);
 	void SetMoveSpeed(float moveSpeed);
 	void SetDestinationPoint(FVector destinationPoint);
-	void SetLeadingTile(AGroundTile* leadingTile);
+	void SetLeadingObstacle(AObstacle* leadingObstacle);
 	void EnableMovement(bool enableMovement);
+	FVector RandomizePositionY();
 	
-private:
-	void MoveTile(float DeltaTime);
+	private:
+	void MoveObstacle(float DeltaTime);
 	void CheckNeedToRecycle();
 };

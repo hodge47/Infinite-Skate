@@ -47,6 +47,8 @@ void AGroundTile::Tick(float DeltaTime)
 
 void AGroundTile::InitializeTile(float moveSpeed, FVector destinationPoint, AGroundTile* leadingTile)
 {
+	// Get the mesh bounds
+	MeshBounds = this->GetStaticMesh()->Bounds.BoxExtent.X * 2.f;
 	// Set the move speed
 	SetMoveSpeed(moveSpeed);
 	// Set the destination point
@@ -92,6 +94,6 @@ void AGroundTile::CheckNeedToRecycle()
 {
 	if (this->GetActorLocation().X <= this->DestinationPoint.X)
 	{
-		this->SetActorLocation(LeadingTile->GetActorLocation() + FVector(400.f, 0.f, 0.f));
+		this->SetActorLocation(LeadingTile->GetActorLocation() + FVector(MeshBounds, 0.f, 0.f));
 	}
 }

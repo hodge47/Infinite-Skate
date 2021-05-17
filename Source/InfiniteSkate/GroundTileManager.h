@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GroundTile.h"
+#include "Obstacle.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GroundTileManager.generated.h"
@@ -24,6 +25,9 @@ public:
 	float TileMoveSpeed;
 	UPROPERTY(EditDefaultsOnly, Category=Spawning)
 	FVector TileDestinationPoint;
+
+	UPROPERTY(EditDefaultsOnly, Category=Spawning)
+	TSubclassOf<AObstacle> ObstacleToSpawn;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -31,10 +35,15 @@ protected:
 
 private:
 	TArray<AGroundTile*> GroundTiles;
+	TArray<AObstacle*> Obstacles;
+	float TileMeshBounds;
+	float ObstacleMeshBounds;
 
 	UFUNCTION()
     void SpawnGroundTiles();
+	void SpawnObstacles();
 	void InitializeGroundTiles();
+	void InitializeObstacles();
 
 public:	
 	// Called every frame
